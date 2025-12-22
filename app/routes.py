@@ -1,27 +1,32 @@
+from flask import render_template, redirect, url_for, flash, request, current_app
+from . import db
+from .models import User, Product
+from .forms import RegistrationForm, LoginForm
+from flask_login import login_user, logout_user, login_required
 import stripe
-from flask import render_template, redirect, url_for, jsonify
-from app import app
+import os
 
-stripe.api_key = "YOUR_STRIPE_SECRET_KEY"
+@current_app.route("/")
+def home():
+    products = Product.query.all()
+    return render_template('index.html', products=products)
 
-@app.route('/create-checkout-session', methods=['POST'])
-def create_checkout_session():
-    try:
-        # In a real app, you'd calculate total from the DB/Cart
-        checkout_session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[{
-                'price_data': {
-                    'currency': 'usd',
-                    'product_data': {'name': 'T-shirt'},
-                    'unit_amount': 2000, # $20.00
-                },
-                'quantity': 1,
-            }],
-            mode='payment',
-            success_url='http://localhost:5000/success',
-            cancel_url='http://localhost:5000/cancel',
-        )
-        return redirect(checkout_session.url, code=303)
-    except Exception as e:
-        return str(e)
+@current_app.route("/checkout")
+@login_required
+def checkout():
+    stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=[{
+            'price_data': {
+                'currency': 'usd',
+                'product_data': {'name': 'Total Order'},
+                'unit_amount': 2000, # Example: $20.00
+            },
+            'quantity': 1,
+        }],
+        mode='payment',
+        success_url=url_for('home', _external=True),
+        cancel_url=url_for('home', _external=True),
+    )
+    return redirect(session.url, code=303)
