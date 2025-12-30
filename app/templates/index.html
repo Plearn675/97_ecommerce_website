@@ -11,9 +11,16 @@
                 <p class="fw-bold">${{ "%.2f"|format(product.price / 100) }}</p>
             </div>
             <div class="card-footer bg-white border-top-0">
-                <form action="{{ url_for('checkout') }}" method="POST">
-                    <button type="submit" class="btn btn-primary w-100">Buy Now</button>
-                </form>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn btn-outline-primary">
+                        Add 1 KG to Cart
+                    </a>
+                    <form action="{{ url_for('checkout') }}" method="POST" class="d-grid">
+                        <button type="submit" class="btn btn-success">
+                            Buy Now
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

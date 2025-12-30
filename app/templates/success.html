@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card shadow-sm p-5">
+                <div class="mb-4">
+                    <h1 class="display-1 text-success">✅</h1>
+                </div>
+                <h1 class="mb-3">Payment Successful!</h1>
+                <p class="lead text-muted">
+                    Thank you for your order. We have received your payment and are now preparing your fresh fruits for delivery.
+                </p>
+                <hr class="my-4">
+                <p>An email confirmation has been sent to your registered address.</p>
+                <div class="mt-4">
+                    <a href="{{ url_for('home') }}" class="btn btn-primary btn-lg">Return to Shop</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

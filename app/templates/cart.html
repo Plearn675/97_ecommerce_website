@@ -1,10 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<h2>Your Shopping Cart</h2>
+<hr>
+{% if display_cart %}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity (KG)</th>
+                <th>Price per KG</th>
+                <th>Subtotal</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in display_cart %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ "%.2f"|format(item.product.price / 100) }}</td>
+                <td>${{ "%.2f"|format(item.subtotal / 100) }}</td>
+                <td><a href="{{ url_for('remove_from_cart', product_id=item.product.id) }}" class="btn btn-sm btn-danger">Remove</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-end">
+        <h4>Total: ${{ "%.2f"|format(total / 100) }}</h4>
+        <form action="{{ url_for('checkout') }}" method="POST">
+            <button type="submit" class="btn btn-success btn-lg">Proceed to Checkout</button>
+        </form>
+    </div>
+{% else %}
+    <div class="alert alert-info">Your cart is empty. <a href="{{ url_for('home') }}">Go buy some fruit!</a></div>
+{% endif %}
+{% endblock %}
